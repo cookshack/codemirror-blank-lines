@@ -1,4 +1,4 @@
-# @cookshack/codemirror-zebra
+# @cookshack/codemirror-blank-lines
 
 CodeMirror 6 extension for styling blank lines.
 
@@ -24,6 +24,7 @@ window.view = new EditorView({
 })
 ```
 
+Then style with CSS.
 ```css
 div.cm-line.cm-blank-line {
   background: ￼￼lightyellow;
