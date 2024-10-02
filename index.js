@@ -26,10 +26,15 @@ function stripeDeco(view) {
 
   builder = new RangeSetBuilder()
   for (let { from, to } of view.visibleRanges)
-    for (let pos = from, line; pos <= to;) {
+    for (let pos = from, line, head; pos <= to;) {
       line = view.state.doc.lineAt(pos)
+      head = view.state.selection.main.head
       if (line.length == 0)
-        builder.add(line.from, line.from, stripe)
+        if ((line.from <= head) && (line.to >= head)) {
+          // current line
+        }
+        else
+          builder.add(line.from, line.from, stripe)
       pos = line.to + 1
     }
   return builder.finish()
@@ -45,7 +50,9 @@ const showStripes = ViewPlugin.fromClass(class {
   }
 
   update(update) {
-    if (update.docChanged || update.viewportChanged)
+    if (update.docChanged
+        || update.viewportChanged
+        || update.selectionSet) // for current line check
       this.decorations = stripeDeco(update.view)
   }
 }, {
