@@ -1,27 +1,12 @@
-//!facet
-
 import { Facet } from '@codemirror/state'
-
-const includeActiveLine = Facet.define({
-  combine: values => values.length ? values[0] : false
-})
-
-//!constructor
-
-export
-function blankLines(options = {}) {
-  return [ options.includeActiveLine == null ? [] : includeActiveLine.of(options.includeActiveLine),
-           showStripes ]
-}
-
-//!stripeDeco
-
 import { Decoration } from '@codemirror/view'
 import { RangeSetBuilder } from '@codemirror/state'
+import { ViewPlugin } from '@codemirror/view'
 
-const stripe = Decoration.line({ attributes: { class: 'cm-blank-line' } })
+let includeActiveLine, decoration, styleBlankLines
 
-function stripeDeco(view) {
+function style
+(view) {
   let builder
 
   builder = new RangeSetBuilder()
@@ -36,27 +21,38 @@ function stripeDeco(view) {
           // current line
         }
         else
-          builder.add(line.from, line.from, stripe)
+          builder.add(line.from, line.from, decoration)
       pos = line.to + 1
     }
   return builder.finish()
 }
 
-//!showStripes
-
-import { ViewPlugin } from '@codemirror/view'
-
-const showStripes = ViewPlugin.fromClass(class {
-  constructor(view) {
-    this.decorations = stripeDeco(view)
+class Plugin {
+  constructor
+  (view) {
+    this.decorations = style(view)
   }
 
-  update(update) {
+  update
+  (update) {
     if (update.docChanged
         || update.viewportChanged
         || update.selectionSet) // for current line check
-      this.decorations = stripeDeco(update.view)
+      this.decorations = style(update.view)
   }
-}, {
-  decorations: v => v.decorations
-})
+}
+
+export
+function blankLines
+(options) {
+  options = options || {}
+  return [ options.includeActiveLine == null ? [] : includeActiveLine.of(options.includeActiveLine),
+           styleBlankLines ]
+}
+
+includeActiveLine = Facet.define({ combine: values => values.length ? values[0] : false })
+
+decoration = Decoration.line({ attributes: { class: 'cm-blank-line' } })
+
+styleBlankLines = ViewPlugin.fromClass(Plugin,
+                                       { decorations: v => v.decorations })
