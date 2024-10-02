@@ -1,9 +1,3 @@
-//!baseTheme
-
-import { EditorView } from '@codemirror/view'
-
-const baseTheme = EditorView.baseTheme({ '.cm-blank-line': { lineHeight: '0.9' } })
-
 //!facet
 
 import { Facet } from '@codemirror/state'
@@ -16,8 +10,7 @@ const stepSize = Facet.define({
 
 export
 function blankLines(options = {}) {
-  return [ baseTheme,
-           options.step == null ? [] : stepSize.of(options.step),
+  return [ options.step == null ? [] : stepSize.of(options.step),
            showStripes ]
 }
 
