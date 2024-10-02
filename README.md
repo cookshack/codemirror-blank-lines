@@ -27,7 +27,7 @@ window.view = new EditorView({
 Then style with CSS.
 ```css
 div.cm-line.cm-blank-line {
-  background: ￼￼lightyellow;
+  background: lightyellow;
   /* works, but will mess up alignment of gutter line numbers */
   line-height: 0.9;
 }
@@ -35,7 +35,7 @@ div.cm-line.cm-blank-line {
 
 ## Build from source
 
-```
+```console
 $ npm i # only needed first time
 $ npm run prepare
 ```
