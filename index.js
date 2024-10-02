@@ -2,15 +2,15 @@
 
 import { Facet } from '@codemirror/state'
 
-const stepSize = Facet.define({
-  combine: values => values.length ? Math.min(...values) : 2
+const includeActiveLine = Facet.define({
+  combine: values => values.length ? values[0] : false
 })
 
 //!constructor
 
 export
 function blankLines(options = {}) {
-  return [ options.step == null ? [] : stepSize.of(options.step),
+  return [ options.includeActiveLine == null ? [] : includeActiveLine.of(options.includeActiveLine),
            showStripes ]
 }
 
@@ -30,7 +30,9 @@ function stripeDeco(view) {
       line = view.state.doc.lineAt(pos)
       head = view.state.selection.main.head
       if (line.length == 0)
-        if ((line.from <= head) && (line.to >= head)) {
+        if (!view.state.facet(includeActiveLine)
+            && (line.from <= head)
+            && (line.to >= head)) {
           // current line
         }
         else
